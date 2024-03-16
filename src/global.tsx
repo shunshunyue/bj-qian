@@ -4,6 +4,7 @@ import defaultSettings from '../config/defaultSettings';
 
 const { pwa } = defaultSettings;
 const isHttps = document.location.protocol === 'https:';
+export const tokenkey = "loginTtoken"
 
 const clearCache = () => {
   // remove all caches
