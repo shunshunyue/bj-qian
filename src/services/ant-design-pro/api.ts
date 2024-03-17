@@ -51,7 +51,7 @@ export async function rule(
   },
   options?: { [key: string]: any },
 ) {
-  return request<API.RuleList>('/api/rule', {
+  return request<API.RuleList>('/api/user', {
     method: 'GET',
     params: {
       ...params,
@@ -61,11 +61,10 @@ export async function rule(
 }
 
 /** 更新规则 PUT /api/rule */
-export async function updateRule(options?: { [key: string]: any }) {
-  return request<API.RuleListItem>('/api/rule', {
+export async function updateRule(options?: any) {
+  return request<API.RuleListItem>(`/api/user/update/${options.id}`, {
     method: 'POST',
     data: {
-      method: 'update',
       ...(options || {}),
     }
   });
@@ -73,7 +72,7 @@ export async function updateRule(options?: { [key: string]: any }) {
 
 /** 新建规则 POST /api/rule */
 export async function addRule(options?: { [key: string]: any }) {
-  return request<API.RuleListItem>('/api/rule', {
+  return request<API.RuleListItem>('/api/user', {
     method: 'POST',
     data: {
       method: 'post',

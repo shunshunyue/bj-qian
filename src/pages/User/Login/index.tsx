@@ -122,6 +122,7 @@ const Login: React.FC = () => {
       if (msg.msg === '登录成功') {
         localStorage.setItem(tokenkey, msg.access_token);
         message.success("登录成功");
+        console.log(localStorage.getItem(tokenkey))
         await fetchUserInfo();
         const urlParams = new URL(window.location.href).searchParams;
         history.push(urlParams.get('redirect') || '/');
