@@ -45,17 +45,14 @@ export default [
       },
     ],
   },
-  {
-    name: 'list.table-list',
-    icon: 'table',
-    path: '/list',
-    component: './TableList',
-  },
+
   {
     name: '用户管理',
     icon: 'table',
     path: '/uuse',
     component: './User',
+    access: 'canUserAdmin',
+
   },
   {
     path: '/',

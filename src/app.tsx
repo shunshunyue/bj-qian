@@ -35,6 +35,7 @@ export async function getInitialState(): Promise<{
     }
     return undefined;
   };
+
   // 如果不是登录页面，执行
   const { location } = history;
   if (location.pathname !== loginPath) {

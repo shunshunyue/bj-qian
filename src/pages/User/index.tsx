@@ -2,18 +2,16 @@ import { addRule, removeRule, rule, updateRule } from '@/services/ant-design-pro
 import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import {
-  FooterToolbar,
   ModalForm,
   PageContainer,
   ProDescriptions,
   ProFormText,
-  ProFormTextArea,
   ProTable,
 } from '@ant-design/pro-components';
-import { FormattedMessage, useIntl } from '@umijs/max';
-import { Button, Drawer, Input, message } from 'antd';
+import { FormattedMessage, useIntl, useModel } from '@umijs/max';
+import { Button, Drawer, message } from 'antd';
 import React, { useRef, useState } from 'react';
-import UpdateForm, { FormValueType } from '../TableList/components/UpdateForm';
+import UpdateForm from './components/UpdateForm';
 
 
 /**
@@ -67,14 +65,14 @@ const handleRemove = async (selectedRows: API.RuleListItem[]) => {
   if (!selectedRows) return true;
   try {
     await removeRule({
-      key: selectedRows.map((row) => row.id),
+      id: selectedRows.map((row) => row.id),
     });
     hide();
-    message.success('Deleted successfully and will refresh soon');
+    message.success('删除成功');
     return true;
   } catch (error) {
     hide();
-    message.error('Delete failed, please try again');
+    message.error('删除失败');
     return false;
   }
 };
@@ -90,13 +88,12 @@ const TableList: React.FC = () => {
    * @zh-CN 分布更新窗口的弹窗
    * */
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
-
+  const { initialState } = useModel('@@initialState');
   const [showDetail, setShowDetail] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.RuleListItem>();
   const [selectedRowsState, setSelectedRows] = useState<API.RuleListItem[]>([]);
-
   /**
    * @en-US International configuration
    * @zh-CN 国际化配置
@@ -130,16 +127,30 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
+        initialState?.currentUser?.roleCongfig.button.includes("userE") &&
         <a
           key="config"
           onClick={() => {
+            const newData = JSON.parse(JSON.stringify(record))
+            newData.password = ""
             handleUpdateModalOpen(true);
-            setCurrentRow(record);
+            setCurrentRow(newData);
           }}
         >
-          <FormattedMessage id="pages.searchTable.config" defaultMessage="Configuration" />
+          编辑
         </a>,
-
+        initialState?.currentUser?.roleCongfig.button.includes("userD") &&
+        <a
+          key="config"
+          onClick={() => {
+            handleRemove([record])
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+        >
+          删除
+        </a>,
       ],
     },
   ];
@@ -157,10 +168,12 @@ const TableList: React.FC = () => {
           labelWidth: 120,
         }}
         toolBarRender={() => [
-          <Button
+          initialState?.currentUser?.roleCongfig.button.includes("userC") &&
+          < Button
             type="primary"
             key="primary"
             onClick={() => {
+              console.log(initialState)
               handleModalOpen(true);
             }}
           >
@@ -176,7 +189,7 @@ const TableList: React.FC = () => {
         }}
       />
 
-      <ModalForm
+      < ModalForm
         title="新增用户"
         width="400px"
         open={createModalOpen}
@@ -227,7 +240,7 @@ const TableList: React.FC = () => {
           label="密码"
 
         />
-      </ModalForm>
+      </ModalForm >
       <UpdateForm key={currentRow?.id} onCancel={(s) => handleUpdateModalOpen(s)} onSubmit={async (value) => {
         value.id = currentRow?.id;
         const success = await handleUpdate(value as API.RuleListItem);
@@ -249,21 +262,21 @@ const TableList: React.FC = () => {
         }}
         closable={false}
       >
-        {currentRow?.name && (
+        {currentRow?.username && (
           <ProDescriptions<API.RuleListItem>
             column={2}
-            title={currentRow?.name}
+            title={currentRow?.username}
             request={async () => ({
               data: currentRow || {},
             })}
             params={{
-              id: currentRow?.name,
+              id: currentRow?.username,
             }}
             columns={columns as ProDescriptionsItemProps<API.RuleListItem>[]}
           />
         )}
       </Drawer>
-    </PageContainer>
+    </PageContainer >
   );
 };
 

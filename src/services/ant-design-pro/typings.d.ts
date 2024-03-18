@@ -21,11 +21,13 @@ declare namespace API {
     };
     address?: string;
     phone?: string;
+    roleCongfig: any
   };
 
   type LoginResult = {
     msg: string,
-    access_token: string
+    access_token: string,
+    message
   };
 
   type PageParams = {
